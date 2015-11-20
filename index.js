@@ -3,17 +3,16 @@
 var stringify = require('js-stringify');
 
 module.exports = function (options) {
-  var jadePath = stringify(options && options.jadePath || 'jade');
   return {
     lex: {
       advance: function(lexer) {
         return this.dyninclude(lexer);
       },
       dyninclude: function(lexer) {
-        var tok = lexer.scan(/^dyninclude(?= |$)/m, 'dynamic-include-dyninclude');
+        var tok = lexer.scan(/^dyninclude(?= |$|\n)/, 'dynamic-include-dyninclude');
         if (tok) {
           lexer.tokens.push(tok);
-          if (/^[ \t]*$/m.test(lexer.input)) {
+          if (/^[ \t]*($|\n)/.test(lexer.input)) {
             lexer.error('DYNAMIC_INCLUDE:NO_DYNINCLUDE_PATH', 'missing path for dyninclude')
           } else if (lexer.text()) {
             return true;
@@ -28,7 +27,7 @@ module.exports = function (options) {
       expressionTokens: {
         'dynamic-include-dyninclude': function(parser) {
           var tok = parser.expect('dynamic-include-dyninclude');
-          var func = "(function(filename){\n  if (/\\.jade$/.test(filename)) {\n    return require(" + jadePath + ").renderFile(filename, locals || {});\n  } else {\n    return require('fs').readFileSync(filename, 'utf8');\n  }\n})";
+          var func = "(function(filename) {\n  if (/\\.jade$/.test(filename)) {\n    return jadeSelf.renderFile(filename, locals || {});\n  } else {\n    return fs.readFileSync(filename, 'utf8');\n  }\n})";
 
           var filenameBuf = [];
 loop:
@@ -43,10 +42,9 @@ loop:
                 parser.advance();
                 filenameBuf.push(pathTok.val);
                 break;
-              case 'eos':
-                break loop;
+              case 'outdent':
               case 'newline':
-                parser.advance();
+              case 'eos':
                 break loop;
               default:
                 parser.error('DYNAMIC_INCLUDE:INVALID_TOKEN', 'unexpected token ' + JSON.stringify(pathTok.type), pathTok);
