@@ -1,10 +1,10 @@
 {
-  "name": "jade-plugin-dynamic-include",
+  "name": "pug-plugin-dynamic-include",
   "version": "0.0.0",
-  "description": "Add support for true dynamic inclusion to Jade",
+  "description": "Add support for true dynamic inclusion to Pug",
   "keywords": [
-    "jade",
-    "jade-plugin"
+    "pug",
+    "pug-plugin"
   ],
   "dependencies": {
     "js-stringify": "^1.0.2"
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jadejs/jade-plugin-debug-line.git"
+    "url": "https://github.com/pugjs/pug-plugin-debug-line.git"
   },
   "author": "Timothy Gu <timothygu99@gmail.com>",
   "license": "MIT"

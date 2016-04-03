@@ -27,7 +27,7 @@ module.exports = function (options) {
       expressionTokens: {
         'dynamic-include-dyninclude': function(parser) {
           var tok = parser.expect('dynamic-include-dyninclude');
-          var func = "(function(filename) {\n  if (/\\.jade$/.test(filename)) {\n    return jadeSelf.renderFile(filename, locals || {});\n  } else {\n    return fs.readFileSync(filename, 'utf8');\n  }\n})";
+          var func = "(function(filename) {\n  if (/\\.pug$/.test(filename)) {\n    return pugSelf.renderFile(filename, locals || {});\n  } else {\n    return fs.readFileSync(filename, 'utf8');\n  }\n})";
 
           var filenameBuf = [];
 loop:
